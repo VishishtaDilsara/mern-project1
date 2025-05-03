@@ -40,7 +40,7 @@ app.post("/", (req, res) => {
     })
     .catch(() => {
       res.json({
-        message: "Student not added",
+        message: "Student not added successfully",
       });
     });
 });
