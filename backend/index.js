@@ -1,23 +1,48 @@
 import express from "express";
 import bodyParser from "body-parser";
+import mongoose from "mongoose";
+import Student from "./models/students.js";
 
 let app = express();
 
 app.use(bodyParser.json());
 
+mongoose
+  .connect(
+    "mongodb+srv://admin:admin123@cluster0.gsuozyc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+  )
+  .then(() => {
+    console.log("Database connected");
+  })
+  .catch(() => {
+    console.log("Database not connected");
+  });
+
 app.get("/", (req, res) => {
-  {
-    console.log(req.body);
-  }
-  res.json({
-    message: "This is a get request",
+  Student.find().then((data) => {
+    res.json(data);
   });
 });
 
 app.post("/", (req, res) => {
-  res.json({
-    message: "This is a post request",
+  const student = new Student({
+    name: req.body.name,
+    age: req.body.age,
+    town: req.body.town,
   });
+
+  student
+    .save()
+    .then(() => {
+      res.json({
+        message: "Student added successfully",
+      });
+    })
+    .catch(() => {
+      res.json({
+        message: "Student not added",
+      });
+    });
 });
 
 app.put("/", (req, res) => {
