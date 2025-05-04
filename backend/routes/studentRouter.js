@@ -1,32 +1,10 @@
 import express from "express";
-import Student from "../models/students.js";
+import { getStudent, saveStudent } from "../controllers/studentController.js";
 
 const studentRouter = express.Router();
 
-studentRouter.get("/", (req, res) => {
-  Student.find().then((data) => {
-    res.json(data);
-  });
-});
+studentRouter.get("/", getStudent);
 
-studentRouter.post("/", (req, res) => {
-  const student = new Student({
-    name: req.body.name,
-    age: req.body.age,
-    town: req.body.town,
-  });
-  student
-    .save()
-    .then(() => {
-      res.json({
-        messsage: "Student Saved Successfully",
-      });
-    })
-    .catch(() => {
-      res.json({
-        messsage: "Student not saved",
-      });
-    });
-});
+studentRouter.post("/", saveStudent);
 
 export default studentRouter;
