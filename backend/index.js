@@ -4,10 +4,26 @@ import mongoose from "mongoose";
 import studentRouter from "./routes/studentRouter.js";
 import productRouter from "./routes/productRouter.js";
 import userRouter from "./routes/userRouter.js";
+import jwt from "jsonwebtoken";
 
 let app = express();
 
 app.use(bodyParser.json());
+
+app.use((req, res, next) => {
+  const tokenString = req.header("Authorization");
+  if (tokenString != null) {
+    const token = tokenString.replace("Bearer ", "");
+
+    jwt.verify(token, "Japura-FOC-1", (err, decoded) => {
+      if (decoded != null) {
+        console.log(decoded);
+      } else {
+        console.log("invalid token");
+      }
+    });
+  }
+});
 
 mongoose
   .connect(
