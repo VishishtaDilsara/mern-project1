@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
-import studentRouter from "./routes/studentRouter.js";
+
 import productRouter from "./routes/productRouter.js";
 import userRouter from "./routes/userRouter.js";
 import jwt from "jsonwebtoken";
@@ -17,11 +17,16 @@ app.use((req, res, next) => {
 
     jwt.verify(token, "Japura-FOC-1", (err, decoded) => {
       if (decoded != null) {
-        console.log(decoded);
+        req.user = decoded;
+        next();
       } else {
-        console.log("invalid token");
+        res.status(403).json({
+          message: "Invalid Token",
+        });
       }
     });
+  } else {
+    next();
   }
 });
 
@@ -36,7 +41,6 @@ mongoose
     console.log("Database not connected");
   });
 
-app.use("/students", studentRouter);
 app.use("/products", productRouter);
 app.use("/users", userRouter);
 
